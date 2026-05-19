@@ -231,7 +231,7 @@
     label {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       position: relative;
       margin-bottom: 0;
       font-size: 13px;
@@ -240,7 +240,7 @@
       color: var(--text-primary);
       cursor: pointer;
       white-space: nowrap;
-      transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+      transition: border-color 0.16s ease, background 0.16s ease;
     }
 
     input[type='checkbox'] {
@@ -253,7 +253,7 @@
 
       &:checked + .media-default-check {
         border-color: var(--primary);
-        background: var(--primary);
+        background: color-mix(in srgb, var(--primary) 88%, #fff);
       }
 
       &:checked + .media-default-check::after {
@@ -267,11 +267,11 @@
     }
 
     .media-default-check {
-      width: 16px;
-      height: 16px;
-      flex: 0 0 16px;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
       border: 1px solid color-mix(in srgb, var(--border-color) 82%, var(--text-tertiary));
-      border-radius: 5px;
+      border-radius: 4px;
       background: var(--bg-primary);
       display: inline-flex;
       align-items: center;
@@ -280,8 +280,8 @@
 
       &::after {
         content: '';
-        width: 8px;
-        height: 5px;
+        width: 7px;
+        height: 4px;
         border-left: 2px solid #fff;
         border-bottom: 2px solid #fff;
         opacity: 0;
@@ -608,21 +608,15 @@
     gap: 8px;
 
     label {
-      min-height: 36px;
-      padding: 8px 10px;
+      min-height: 34px;
+      padding: 7px 10px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       background: var(--bg-primary);
 
       &:hover {
         border-color: color-mix(in srgb, var(--primary) 38%, var(--border-color));
-        background: color-mix(in srgb, var(--primary) 5%, var(--bg-primary));
-      }
-
-      &:has(input:checked) {
-        border-color: color-mix(in srgb, var(--primary) 55%, var(--border-color));
-        background: color-mix(in srgb, var(--primary) 8%, var(--bg-primary));
-        color: var(--primary);
+        background: color-mix(in srgb, var(--text-tertiary) 4%, var(--bg-primary));
       }
     }
   }
