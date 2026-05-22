@@ -397,13 +397,7 @@ let keyService: any
 if (process.platform === 'darwin') {
   keyService = new KeyServiceMac()
 } else if (process.platform === 'linux') {
-  // const { KeyServiceLinux } = require('./services/keyServiceLinux')
-  // keyService = new KeyServiceLinux()
-
-  import('./services/keyServiceLinux').then(({ KeyServiceLinux }) => {
-    keyService = new KeyServiceLinux();
-  });
-
+  keyService = new KeyServiceLinux()
 } else {
   keyService = new KeyService()
 }
@@ -1792,6 +1786,7 @@ function registerIpcHandlers() {
     sessionId?: string
     startTime?: number
     endTime?: number
+    sourceType?: 'insight' | 'message_analysis' | 'all'
     limit?: number
     offset?: number
   }) => {
@@ -1818,6 +1813,14 @@ function registerIpcHandlers() {
     return insightService.triggerTest()
   })
 
+  ipcMain.handle('insight:triggerSessionInsight', async (_, payload: {
+    sessionId: string
+    displayName?: string
+    avatarUrl?: string
+  }) => {
+    return insightService.triggerSessionInsight(payload)
+  })
+
   ipcMain.handle('insight:generateFootprintInsight', async (_, payload: {
     rangeLabel: string
     summary: {
@@ -1832,6 +1835,21 @@ function registerIpcHandlers() {
     mentionGroups?: Array<{ displayName?: string; session_id?: string; count?: number }>
   }) => {
     return insightService.generateFootprintInsight(payload)
+  })
+
+  ipcMain.handle('insight:generateMessageInsight', async (_, payload: {
+    sessionId: string
+    displayName?: string
+    avatarUrl?: string
+    targetLocalId?: number
+    targetCreateTime?: number
+    targetMessageKey?: string
+    targetText: string
+    targetSenderName?: string
+    contextCount?: number
+    forceRefresh?: boolean
+  }) => {
+    return insightService.generateMessageInsight(payload)
   })
 
   ipcMain.handle('social:saveWeiboCookie', async (_, rawInput: string) => {
@@ -2349,8 +2367,8 @@ function registerIpcHandlers() {
     return chatService.getContactTypeCounts()
   })
 
-  ipcMain.handle('chat:getSessionMessageCounts', async (_, sessionIds: string[]) => {
-    return chatService.getSessionMessageCounts(sessionIds)
+  ipcMain.handle('chat:getSessionMessageCounts', async (_, sessionIds: string[], options?: { preferHintCache?: boolean; bypassSessionCache?: boolean }) => {
+    return chatService.getSessionMessageCounts(sessionIds, options)
   })
 
   ipcMain.handle('chat:enrichSessionsContactInfo', async (_, usernames: string[], options?: {
@@ -3213,7 +3231,8 @@ function registerIpcHandlers() {
             imageAesKey: imageKeys.aesKey,
             resourcesPath,
             userDataPath,
-            logEnabled
+            logEnabled,
+            isPackaged: app.isPackaged
           }
         })
 
@@ -3344,7 +3363,8 @@ function registerIpcHandlers() {
             imageAesKey: imageKeys.aesKey,
             resourcesPath: app.isPackaged ? join(process.resourcesPath, 'resources') : join(app.getAppPath(), 'resources'),
             userDataPath: app.getPath('userData'),
-            logEnabled: cfg.get('logEnabled')
+            logEnabled: cfg.get('logEnabled'),
+            isPackaged: app.isPackaged
           }
         })
 
@@ -3411,7 +3431,8 @@ function registerIpcHandlers() {
             myWxid: String(cfg.getMyWxidCleaned() || '').trim(),
             resourcesPath: app.isPackaged ? join(process.resourcesPath, 'resources') : join(app.getAppPath(), 'resources'),
             userDataPath: app.getPath('userData'),
-            logEnabled: cfg.get('logEnabled')
+            logEnabled: cfg.get('logEnabled'),
+            isPackaged: app.isPackaged
           }
         })
 

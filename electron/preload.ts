@@ -195,7 +195,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getSessionStatuses: (usernames: string[]) => ipcRenderer.invoke('chat:getSessionStatuses', usernames),
     getExportTabCounts: () => ipcRenderer.invoke('chat:getExportTabCounts'),
     getContactTypeCounts: () => ipcRenderer.invoke('chat:getContactTypeCounts'),
-    getSessionMessageCounts: (sessionIds: string[]) => ipcRenderer.invoke('chat:getSessionMessageCounts', sessionIds),
+    getSessionMessageCounts: (sessionIds: string[], options?: { preferHintCache?: boolean; bypassSessionCache?: boolean }) => ipcRenderer.invoke('chat:getSessionMessageCounts', sessionIds, options),
     enrichSessionsContactInfo: (
       usernames: string[],
       options?: { skipDisplayName?: boolean; onlyMissingAvatar?: boolean }
@@ -583,6 +583,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     markRecordRead: (id: string) => ipcRenderer.invoke('insight:markRecordRead', id),
     clearRecords: (filters?: any) => ipcRenderer.invoke('insight:clearRecords', filters),
     triggerTest: () => ipcRenderer.invoke('insight:triggerTest'),
+    triggerSessionInsight: (payload: {
+      sessionId: string
+      displayName?: string
+      avatarUrl?: string
+    }) => ipcRenderer.invoke('insight:triggerSessionInsight', payload),
     generateFootprintInsight: (payload: {
       rangeLabel: string
       summary: {
@@ -595,7 +600,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
       }
       privateSegments?: Array<{ displayName?: string; session_id?: string; incoming_count?: number; outgoing_count?: number; message_count?: number; replied?: boolean }>
       mentionGroups?: Array<{ displayName?: string; session_id?: string; count?: number }>
-    }) => ipcRenderer.invoke('insight:generateFootprintInsight', payload)
+    }) => ipcRenderer.invoke('insight:generateFootprintInsight', payload),
+    generateMessageInsight: (payload: {
+      sessionId: string
+      displayName?: string
+      avatarUrl?: string
+      targetLocalId?: number
+      targetCreateTime?: number
+      targetMessageKey?: string
+      targetText: string
+      targetSenderName?: string
+      contextCount?: number
+      forceRefresh?: boolean
+    }) => ipcRenderer.invoke('insight:generateMessageInsight', payload)
   },
 
   social: {
