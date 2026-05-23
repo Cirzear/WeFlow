@@ -131,7 +131,7 @@ const fixSnsUrl = (url: string, token?: string, isVideo: boolean = false) => {
     // 只有非视频（即图片）才需要处理路径末尾的尺寸标识（/150、/200等）变为 /0
     if (!isVideo) {
         const [pathPart, queryPart] = fixedUrl.split('?')
-        const fixedPath = pathPart.replace(/\/\d+$/, '/0')
+        const fixedPath = pathPart.replace(/\/(150|200|480)($|\?)/, '/0$2')
         fixedUrl = queryPart ? `${fixedPath}?${queryPart}` : fixedPath
     }
 
