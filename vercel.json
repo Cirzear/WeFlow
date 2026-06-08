@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "echo 'Vercel deployments are disabled for this desktop Electron app. Use GitHub Actions release workflows for Windows and macOS packages.' && exit 0"
+}

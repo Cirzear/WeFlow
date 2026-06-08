@@ -1,9 +1,9 @@
 name: Build and Release
 
+# Manual only. Automatic tag-triggered release builds are disabled.
+# To release desktop packages, run this workflow manually on the desired v* tag/ref.
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: write

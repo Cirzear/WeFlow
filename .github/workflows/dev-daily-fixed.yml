@@ -1,14 +1,8 @@
 name: Dev Daily
 
+# Manual only. Automatic nightly builds are disabled for this desktop app.
 on:
-  schedule:
-    # GitHub Actions schedule uses UTC. 16:00 UTC = 北京时间次日 00:00
-    - cron: "0 16 * * *"
   workflow_dispatch:
-
-concurrency:
-  group: dev-nightly-fixed-release
-  cancel-in-progress: true
 
 permissions:
   contents: write
